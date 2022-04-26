@@ -1,52 +1,52 @@
-import React,{useState} from 'react';
-import './App.css';
-import { List, Avatar} from 'antd';
-import Nav from './Nav'
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import { List, Avatar } from "antd";
+import { Link } from "react-router-dom";
+import Nav from "./Nav";
 
 function ScreenSource() {
+  const [sourceList, setSourceList] = useState([]);
 
-  const data = [
-    {
-      title: 'Ant Design Title 1',
-    },
-    {
-      title: 'Ant Design Title 2',
-    },
-    {
-      title: 'Ant Design Title 3',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-  ];
+  useEffect(() => {
+    async function loadData() {
+      var rawResponse = await fetch(
+        "https://newsapi.org/v2/top-headlines/sources?country=fr&language=fr&sortBy=popularity&apiKey=e26d973dd7d04ce7bb0731a081c3f553"
+      );
+      var response = await rawResponse.json();
+      setSourceList(response.sources);
+    }
+    loadData();
+  }, []);
+  console.log(sourceList);
 
   return (
     <div>
-        <Nav/>
-       
-       <div className="Banner"/>
+      <Nav />
 
-       <div className="HomeThemes">
-          
-              <List
-                  itemLayout="horizontal"
-                  dataSource={data}
-                  renderItem={item => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                        title={<a href="https://ant.design">{item.title}</a>}
-                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                      />
-                    </List.Item>
-                  )}
+      <div className="Banner" />
+
+      <div className="HomeThemes">
+        <List
+          itemLayout="horizontal"
+          dataSource={sourceList}
+          renderItem={(item) => (
+            <List.Item>
+              <Link to="/screenarticlesbysource/">
+                <List.Item.Meta
+                  avatar={<Avatar src={`/images/${item.category}.png`} />}
+                  title={<Link to={`/screenarticlesbysource/${item.id}`}>{item.name}</Link>}
+                  description={item.description}
                 />
-
-
-          </div>
-                 
+              </Link>
+            </List.Item>
+          )}
+        />
       </div>
+    </div>
   );
 }
 
 export default ScreenSource;
+{
+  /* <a href={item.src}>{ */
+}
