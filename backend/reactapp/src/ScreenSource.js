@@ -31,13 +31,11 @@ function ScreenSource() {
           dataSource={sourceList}
           renderItem={(item) => (
             <List.Item>
-              <Link to="/screenarticlesbysource/">
-                <List.Item.Meta
-                  avatar={<Avatar src={`/images/${item.category}.png`} />}
-                  title={<Link to={`/screenarticlesbysource/${item.id}`}>{item.name}</Link>}
-                  description={item.description}
-                />
-              </Link>
+              <List.Item.Meta
+                avatar={<Avatar src={`/images/${item.category}.png`} />}
+                title={<Link to={`/screenarticlesbysource/${item.id}`}>{item.name}</Link>}
+                description={item.description}
+              />
             </List.Item>
           )}
         />
