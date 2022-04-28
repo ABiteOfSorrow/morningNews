@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import "./App.css";
 import { Card, Icon, Modal } from "antd";
 import Nav from "./Nav";
+import { connect } from "react-redux";
+
+// const store = createStore(combineReducers({ count }));
 
 const { Meta } = Card;
 
@@ -13,11 +16,12 @@ function ScreenArticlesBySource(props) {
   const [content, setContent] = useState("");
 
   var { id } = useParams();
+  var { language } = useParams();
 
   useEffect(() => {
     async function loadArticle() {
       var rawResponse = await fetch(
-        `https://newsapi.org/v2/top-headlines?sources=${id}&language=fr&sortBy=popularity&apiKey=e26d973dd7d04ce7bb0731a081c3f553`
+        `https://newsapi.org/v2/top-headlines?sources=${id}&language=${language}&sortBy=popularity&apiKey=e26d973dd7d04ce7bb0731a081c3f553`
       );
       var response = await rawResponse.json();
       setArticleList(response.articles);
@@ -57,14 +61,31 @@ function ScreenArticlesBySource(props) {
               }}
               cover={<img alt="example" src={article.urlToImage} />}
               actions={[
-                <Icon type="read" key="ellipsis2" onClick={() => showModal(article.title, article.content)} />,
-                <Icon type="like" key="ellipsis" />,
+                <Icon
+                  type="read"
+                  key="ellipsis2"
+                  onClick={() => showModal(article.title, article.content)}
+                />,
+                <Icon
+                  type="like"
+                  key="ellipsis"
+                  onClick={() =>
+                    props.addToWishList(
+                      article
+                    )
+                  }
+                />,
               ]}
             >
               <Meta title={article.title} description={article.description} />
             </Card>
 
-            <Modal title={title} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <Modal
+              title={title}
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+            >
               <p>{content}</p>
             </Modal>
           </div>
@@ -74,4 +95,12 @@ function ScreenArticlesBySource(props) {
   );
 }
 
-export default ScreenArticlesBySource;
+function mapDispatchToProps(dispatch) {
+  return {
+    addToWishList: function (article) {
+      dispatch({ type: "ADD_ARTICLE", article });
+    },
+  };
+}
+
+export default connect(null, mapDispatchToProps)(ScreenArticlesBySource);
